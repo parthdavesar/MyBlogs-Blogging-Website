@@ -23,13 +23,13 @@ def home(request):
     
 def contact(request):
     if request.method == 'GET':
-        return render(request, 'myblogs\contact.html')
+        return render(request, 'myblogs/contact.html')
     elif request.method == 'POST':
         email = request.POST.get('user_email')
         message = request.POST.get('message')
         x = contact_info(u_email = email, u_message = message)
         x.save()
-        return render(request, 'myblogs\contact.html', {'feedback':'Your message has been recorded'})
+        return render(request, 'myblogs/contact.html', {'feedback':'Your message has been recorded'})
 
 def ck(request):
     x=BlogPost_Form()
