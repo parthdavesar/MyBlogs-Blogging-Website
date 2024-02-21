@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BLOG DETAILS</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container mt-2">
+      <!-- <img src="{{ obj.cover_img.url }}" class="card-img-top" alt="..."> -->
+      <h2 class="text-center">{{ obj.blog_name }}</h2>
+      <h3 class="text-center">{{ obj.blog_cat }}</h3>
+      {{obj.blog_description|safe}}
+    </div>
+    <div class="container text-center">
+      {% if user.is_authenticated %}
+        {% if isLiked %}
+        <a href="{% url 'unlike' obj.id %}" class="btn btn-primary"
+        >Unlike this post</a>
+        {% else %}
+        <a href="{% url 'add_like' obj.id %}" class="btn btn-primary"
+          >Like this post</a>
+        {% endif %}  
+      {% else %}
+      <p style="margin-bottom: 20px; text-align: center; color: rgb(7, 7, 7)">
+        Login to Like this post   
+      </p>
+      {% endif %}
+      <br>
+      <span class="container text-center">
+        <h4>Likes: {{ obj.like_count }}</h4>
+        <h4>Total Views: {{ obj.view_count }}</h4>
+      </span>
+    </div>
+    <!--COMMENT SECTION STARTS HERE-->
+
+    <!-- Comment section -->
+    {% with comment_count=obj.comments.count %}
+    <div
+      class="comments-container text-center"
+      style="margin: auto; width: 100%; max-width: 800px"
+    >
+      <h3
+        style="
+          margin-bottom: 20px;
+          margin-top: 20px;
+          color: rgb(20, 20, 20);
+          text-align: center;
+        "
+      >
+        COMMENTS({{ comment_count }})
+      </h3>
+      {% if user.is_authenticated %}
+      <form
+        method="post"
+        action="{% url 'add_comment' blog_id=obj.id %}"
+        style="margin-bottom: 20px; text-align: center"
+      >
+        {% csrf_token %}
+        <input type="text" name="text" placeholder="Enter text">
+        <button
+          type="submit"
+          class="btn btn-primary mt-2"
+          style="display: block; margin: 0 auto"
+        >
+          Submit
+        </button>
+      </form>
+      {% else %}
+      <p style="margin-bottom: 20px; text-align: center; color: rgb(7, 7, 7)">
+        Login to add comments
+      </p>
+      {% endif %}
+      {% for comment in obj.comments.all %}
+      <div
+        style="
+          margin-bottom: 20px;
+          text-align: left;
+          color: rgb(12, 12, 12);
+          display: flex;
+          align-items: left;
+          justify-content: left;
+        "
+      >
+        <div style="flex-grow: 1">
+          <p style="margin-bottom: 5px; font-weight: bold">
+            {{ comment.author.username }}
+          </p>
+          <p style="margin-top: 5px; font-style: italic">{{ comment.text }}</p>
+        </div>
+        <div style="display: flex; align-items: center">
+          <p style="margin: 10px; color: rgb(7, 7, 7)">
+            <h7>{{ comment.created_date|timesince }}</h7>
+          </p>
+          {% if comment.author == user %}
+          <div style="margin-right: 10px">
+            <a
+              href="{% url 'edit_comment' blog_id=obj.id comment_id=comment.id %}"
+              style="
+                font-weight: bold;
+                color: #0f7eed;
+                text-decoration: underline;
+                font-style: normal;
+              "
+              >EDIT</a
+            >
+          </div>
+          <div>
+            <a
+              href="{% url 'delete_comment' blog_id=obj.id comment_id=comment.id %}"
+              style="
+                font-weight: bold;
+                color: #0f7eed;
+                text-decoration: underline;
+                font-style: normal;
+              "
+              >DELETE</a
+            >
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endwith %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

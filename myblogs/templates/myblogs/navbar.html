@@ -1,0 +1,82 @@
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+      <div class="container-fluid">
+        <a
+          class="navbar-brand"
+          href="#"
+          style="font-family: monospace; font-size: 140%"
+        >
+          <b>MyBlogs</b>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a href="{% url 'home' %}" class="nav-link active" aria-current="page">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'add_blog' %}" class="nav-link active">Write a Blog</a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'allblogs' %}" class="nav-link active">All Blogs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'contact' %}">Contact</a>
+            </li>
+          </ul>
+          {% if user.is_authenticated %}
+          <p
+            class="mb-2 mx-1"
+            style="font-size: 125%; color: rgb(252, 250, 250); padding-top: 5px"
+          >
+            Welcome! {{ user.username }}
+          </p>
+          <a
+            class="btn btn-danger"
+            style="margin-left: 4px; margin-right: 8px; margin-bottom: 8px;"
+            href="{% url 'logoutuser' %}"
+            >logout</a
+          >
+          {% else %}
+          <form method="get" action="{% url 'loginuser' %}">
+            {% csrf_token %}
+            <button class="btn btn-primary me-2" type="submit">
+              Login
+            </button>
+          </form>
+          <form method="get" action="{% url 'signupuser' %}">
+            {% csrf_token %}
+            <button class="btn btn-primary me-2 my-2" type="submit">
+              Signup
+            </button>
+          </form>
+          {% endif %}
+          <form
+            class="d-flex"
+            role="search"
+            action="{% url 'findproduct' %}"
+            method="post"
+          >
+            {% csrf_token %}
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              name="prod_search"
+            />
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
